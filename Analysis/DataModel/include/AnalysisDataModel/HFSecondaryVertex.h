@@ -611,6 +611,12 @@ auto CtX(const T& candidate)
 }
 
 template <typename T>
+auto InvQXToJpsiPiPi(const T& candidate)
+{
+  return 10;
+}
+
+template <typename T>
 auto YX(const T& candidate)
 {
   return candidate.y(massX);
