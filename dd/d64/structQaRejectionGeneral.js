@@ -1,0 +1,26 @@
+var structQaRejectionGeneral =
+[
+    [ "TracksPID", "dd/d64/structQaRejectionGeneral.html#a581791403e6c49848396bb15bef77231", null ],
+    [ "init", "dd/d64/structQaRejectionGeneral.html#ad4e2cb57938bf8372ab99c801bc1bf0d", null ],
+    [ "process", "dd/d64/structQaRejectionGeneral.html#a6c924e81b1cb539de49fee7cc46ee9f9", null ],
+    [ "d_nSigmaRICH", "dd/d64/structQaRejectionGeneral.html#ad7c28094da961a96c8adea9ad21ee2fd", null ],
+    [ "d_nSigmaRICHCombinedTOF", "dd/d64/structQaRejectionGeneral.html#afa478231c2b56615383e0f8125e3ff52", null ],
+    [ "d_nSigmaTOF", "dd/d64/structQaRejectionGeneral.html#a9ddbdf00bd2ee9bf2dfcc1e858fe1da7", null ],
+    [ "d_nSigmaTOFCombined", "dd/d64/structQaRejectionGeneral.html#ab21f7744ed9bbad47a7938bf85658d1f", null ],
+    [ "d_nSigmaTPC", "dd/d64/structQaRejectionGeneral.html#a6c91621cc720a76bb41a677fe5e9d717", null ],
+    [ "d_pidRICHMaxpT", "dd/d64/structQaRejectionGeneral.html#ade93bb34b663b0dc21ea06086c27e0d6", null ],
+    [ "d_pidRICHMinpT", "dd/d64/structQaRejectionGeneral.html#a43554a8482dc1e8a7eaffa089de8c7a8", null ],
+    [ "d_pidTOFMaxpT", "dd/d64/structQaRejectionGeneral.html#a8b3c890302385f8977e11372540a25e6", null ],
+    [ "d_pidTOFMinpT", "dd/d64/structQaRejectionGeneral.html#a6f56c5d42657c636505f71a42c3b8815", null ],
+    [ "d_pidTPCMaxpT", "dd/d64/structQaRejectionGeneral.html#aaf724ae92e384357aa60ce1f174c49e1", null ],
+    [ "d_pidTPCMinpT", "dd/d64/structQaRejectionGeneral.html#a0bc5c2433eb6dd1a145cde3f3c15fc12", null ],
+    [ "etaBins", "dd/d64/structQaRejectionGeneral.html#a3bdb991d900cd99d84e2b803b2a62241", null ],
+    [ "etaMax", "dd/d64/structQaRejectionGeneral.html#a30cee8a91d940ec2d7f10470f0fb32a8", null ],
+    [ "etaMaxSel", "dd/d64/structQaRejectionGeneral.html#a833e9b4fa8173f89c0067a0338c6d4ba", null ],
+    [ "etaMin", "dd/d64/structQaRejectionGeneral.html#a3c9d6b7922eabc8febc6fc02cd22a84f", null ],
+    [ "histos", "dd/d64/structQaRejectionGeneral.html#ae1001318df8622724bded567fa687ce0", null ],
+    [ "ptBins", "dd/d64/structQaRejectionGeneral.html#a159e4c1d0aa07b8c644d5668fe6012b6", null ],
+    [ "ptMax", "dd/d64/structQaRejectionGeneral.html#ac39dbf4749307af5f7ac1f9ce0dbb85d", null ],
+    [ "ptMin", "dd/d64/structQaRejectionGeneral.html#a6f2a5acf19f9d7da044c63e4308438ed", null ],
+    [ "ptMinSel", "dd/d64/structQaRejectionGeneral.html#aa2a22c2fcdc1a634c547a3c2308f5dea", null ]
+];

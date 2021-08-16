@@ -1,0 +1,26 @@
+var structHfJpsiCandidateSelector =
+[
+    [ "TracksPID", "d4/db0/structHfJpsiCandidateSelector.html#a06a0fa90a448da3636772d9cff50a1d0", null ],
+    [ "PROCESS_SWITCH", "d4/db0/structHfJpsiCandidateSelector.html#afa5dcc55362fa2cd994bb2a2a5c32964", null ],
+    [ "PROCESS_SWITCH", "d4/db0/structHfJpsiCandidateSelector.html#a72be992473ee89320d4788073703d0d1", null ],
+    [ "processAlice2", "d4/db0/structHfJpsiCandidateSelector.html#a55d4b5c3fa5fd370210605685cca39c8", null ],
+    [ "processAlice3", "d4/db0/structHfJpsiCandidateSelector.html#a8505be830cca6a6214fd133605afbc06", null ],
+    [ "selectionTopol", "d4/db0/structHfJpsiCandidateSelector.html#a792788ad70b697c5e6eda8915fb76aca", null ],
+    [ "cuts", "d4/db0/structHfJpsiCandidateSelector.html#aa9d7b9dd8f7b301de192b04fe05ac4c5", null ],
+    [ "d_nSigmaRICH", "d4/db0/structHfJpsiCandidateSelector.html#a046a2d28e41950f734791f98c9c3e949", null ],
+    [ "d_nSigmaRICHCombinedTOF", "d4/db0/structHfJpsiCandidateSelector.html#aa02ee16c6f4e35797459536ecfd3407c", null ],
+    [ "d_nSigmaTOF", "d4/db0/structHfJpsiCandidateSelector.html#a9773d93e0bfa62ad0da590469b1457d9", null ],
+    [ "d_nSigmaTOFCombined", "d4/db0/structHfJpsiCandidateSelector.html#af3215157fde1385589094711522d7666", null ],
+    [ "d_nSigmaTPC", "d4/db0/structHfJpsiCandidateSelector.html#a237b75b1c45dceb9cd31946338992af0", null ],
+    [ "d_pidRICHMaxpT", "d4/db0/structHfJpsiCandidateSelector.html#a6d1cb62bb6487782795d62bade2547d6", null ],
+    [ "d_pidRICHMinpT", "d4/db0/structHfJpsiCandidateSelector.html#a0ea06e8cb5a383ce4aad2bdf75f99b5e", null ],
+    [ "d_pidTOFMaxpT", "d4/db0/structHfJpsiCandidateSelector.html#a2f633c17f9f25970cb38dc689ae1fa0e", null ],
+    [ "d_pidTOFMinpT", "d4/db0/structHfJpsiCandidateSelector.html#ac58a73e675ae606ebb35151513bb0395", null ],
+    [ "d_pidTPCMaxpT", "d4/db0/structHfJpsiCandidateSelector.html#a4cc8a0f371be6fb8bf251407e8d863b4", null ],
+    [ "d_pidTPCMinpT", "d4/db0/structHfJpsiCandidateSelector.html#a2ff335e1d12bf950afc71437ea8b0b51", null ],
+    [ "d_pTCandMax", "d4/db0/structHfJpsiCandidateSelector.html#a58b4fe1480185a7a4e8c87268a36fe87", null ],
+    [ "d_pTCandMin", "d4/db0/structHfJpsiCandidateSelector.html#a52511789d1a5758a78cd6f597901003e", null ],
+    [ "hfSelJpsiCandidate", "d4/db0/structHfJpsiCandidateSelector.html#a5470b5c98df6729ce4e8d5eba51eadb1", null ],
+    [ "pTBins", "d4/db0/structHfJpsiCandidateSelector.html#aa92036d02891caeb9b9d83c8dc9480fb", null ],
+    [ "selectENotPi", "d4/db0/structHfJpsiCandidateSelector.html#a438fada0d58f93660640cdd2be2a14f5", null ]
+];
