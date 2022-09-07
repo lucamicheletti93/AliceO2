@@ -87,7 +87,7 @@ struct PVertexerParams : public o2::conf::ConfigurableParamHelper<PVertexerParam
 
   // track vertex time-wise association
   float nSigmaTimeTrack = 4.;       ///< define track time bracker as +- this number of sigmas of its time resolution
-  float timeMarginTrackTime = 0.5;  ///< additive marginal error in \mus to track time bracket
+  float timeMarginTrackTime = 0.0;  ///< additive marginal error in \mus to track time bracket
   float timeMarginVertexTime = 0.0; ///< additive marginal error to \mus vertex time bracket
 
   O2ParamDef(PVertexerParams, "pvertexer");

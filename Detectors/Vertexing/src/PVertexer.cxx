@@ -193,6 +193,7 @@ int PVertexer::findVertices(const VertexingInput& input, std::vector<PVertex>& v
 #endif
     tCurr = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()).time_since_epoch().count();
     auto clTime = tCurr - tStart;
+    dumpPool();
     if (clTime > mPVParams->maxTimeMSPerCluster) {
       LOGP(warn, "Time per TZ-cluster ({}ms) of {} tracks exceeded limit after {} trials, abandon", clTime, mult, nTrials);
       if (!mPoolDumpProduced) {

@@ -17,6 +17,7 @@
 #include "DetectorsVertexing/VertexTrackMatcher.h"
 #include <unordered_map>
 #include <numeric>
+#include <TH1F.h>
 
 using namespace o2::vertexing;
 
@@ -37,6 +38,15 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
   std::unordered_map<GIndex, bool> vcont;
   std::vector<VtxTBracket> vtxOrdBrack; // vertex indices and brackets sorted in tmin
   float maxVtxSpan = 0;
+  TFile *fOut = new TFile("Timing.root", "RECREATE");
+  TH1F* histTime = new TH1F("histTime", "#Delta#tau", 100, 0., 2.);
+  histTime -> GetXaxis() -> SetTitle("#tau [#mus]");
+  TH1F* histNambi = new TH1F("histNambi", "n. tracks", 4, 0., 4.);
+  histNambi -> GetXaxis() -> SetBinLabel(1, "Assigned");
+  histNambi -> GetXaxis() -> SetBinLabel(2, "Ambiguous");
+  histNambi -> GetXaxis() -> SetBinLabel(3, "Contrib.");
+  histNambi -> GetXaxis() -> SetBinLabel(4, "Non Contrib.");
+
   for (int iv = 0; iv < nv; iv++) {
     int idMin = v2tfitRefs[iv].getFirstEntry(), idMax = idMin + v2tfitRefs[iv].getEntries();
     auto& vtxIds = tmpMap[iv]; // global IDs of contibuting tracks
@@ -54,7 +64,13 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
     if (vto.tBracket.delta() > maxVtxSpan) {
       maxVtxSpan = vto.tBracket.delta();
     }
+    double timeMin = (vtx.getIRMin().differenceInBC(recoData.startIR) - 0.5f) * o2::constants::lhc::LHCBunchSpacingMUS - PVParams.timeMarginVertexTime;
+    double timeMax = (vtx.getIRMax().differenceInBC(recoData.startIR) + 0.5f) * o2::constants::lhc::LHCBunchSpacingMUS + PVParams.timeMarginVertexTime;
+    LOG(info) << vtx.getIRMin().differenceInBC(recoData.startIR) << " " << recoData.startIR << " " << vtx.getIRMax().differenceInBC(recoData.startIR) << " " << o2::constants::lhc::LHCBunchSpacingMUS << " " << PVParams.timeMarginVertexTime << " -> " << timeMax - timeMin ;
+    histTime -> Fill(timeMax - timeMin);
   }
+  fOut -> cd();
+  histTime -> Write();
   // sort vertices in tmin
   std::sort(vtxOrdBrack.begin(), vtxOrdBrack.end(), [](const VtxTBracket& a, const VtxTBracket& b) { return a.tBracket.getMin() < b.tBracket.getMin(); });
 
@@ -66,6 +82,9 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
     vtxList.clear();
     for (int iv = ivStart; iv < nv; iv++) {
       const auto& vto = vtxOrdBrack[iv];
+      if (tro.origID.getSource()==GIndex::Source::MCHMID){
+        LOG(info) << "Track " << tro.origID << " [" << tro.tBracket.getMin() << "," << tro.tBracket.getMax() << "] matches with vtx " << vto.origID << " [" << vto.tBracket.getMin() << "," << vto.tBracket.getMax() << "] -> DELTA TR = " << tro.tBracket.getMax() - tro.tBracket.getMin() << " / DELTA VTX = " << vto.tBracket.getMax() - vto.tBracket.getMin() ;
+      }
       auto res = tro.tBracket.isOutside(vto.tBracket);
       if (res == TBracket::Below) {                                       // vertex preceeds the track
         if (tro.tBracket.getMin() > vto.tBracket.getMin() + maxVtxSpan) { // all following vertices will be preceeding all following tracks times
@@ -85,6 +104,7 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
       for (auto v : vtxList) {
         auto& ref = tmpMap[v].emplace_back(tro.origID);
         if (ambig) {
+          //LOG(info) << "Track " << tro.origID << " is ambiguous!" ;
           ref.setAmbiguous();
         }
       }
@@ -94,6 +114,7 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
     } else {
       orphans.emplace_back(tro.origID); // register unassigned track
     }
+    //std::cout << "====================================" << std::endl;
   }
 
   // build final vector of global indices
@@ -102,6 +123,7 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
 
   for (int iv = 0; iv < nv1; iv++) {
     auto& trvec = tmpMap[iv];
+    //const auto& vto = vtxOrdBrack[iv];
     // sort entries in each vertex track indices list according to the source
     std::sort(trvec.begin(), trvec.end(), [](VTIndex a, VTIndex b) { return a.getSource() < b.getSource(); });
 
@@ -121,9 +143,16 @@ void VertexTrackMatcher::process(const o2::globaltracking::RecoContainer& recoDa
       vr.setFirstEntryOfSource(oldSrc, trackIndex.size());
     }
     vr.setEnd(trackIndex.size());
-    LOG(info) << vr;
+    //LOG(info) << vr << " -> DeltaT = " << vto.tBracket.getMax() - vto.tBracket.getMin();
   }
   LOG(info) << "Assigned " << nAssigned << " (" << nAmbiguous << " ambiguously) out of " << mTBrackets.size() << " non-contributor tracks + " << vcont.size() << " contributors";
+  histNambi -> SetBinContent(1, nAssigned);
+  histNambi -> SetBinContent(2, nAmbiguous);
+  histNambi -> SetBinContent(3, vcont.size());
+  histNambi -> SetBinContent(4, mTBrackets.size());
+  fOut -> cd();
+  histNambi -> Write();
+  fOut -> Close();
 }
 
 //________________________________________________________
