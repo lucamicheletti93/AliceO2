@@ -506,6 +506,7 @@ DECLARE_SOA_COLUMN(Phi, phi, float);                                            
 DECLARE_SOA_COLUMN(Tgl, tgl, float);                                                         //! TrackParFwd parameter tan(\lamba); (\lambda = 90 - \theta_{polar})
 DECLARE_SOA_COLUMN(Signed1Pt, signed1Pt, float);                                             //! TrackParFwd parameter: charged inverse transverse momentum; (q/pt)
 DECLARE_SOA_COLUMN(NClusters, nClusters, int8_t);                                            //! Number of clusters
+DECLARE_SOA_COLUMN(MFTClusterSizes, mftClusterSizes, uint64_t);                              //! Cluster sizes per track and per layer
 DECLARE_SOA_COLUMN(Chi2, chi2, float);                                                       //! Track chi^2
 DECLARE_SOA_COLUMN(PDca, pDca, float);                                                       //! PDca for MUONStandalone
 DECLARE_SOA_COLUMN(RAtAbsorberEnd, rAtAbsorberEnd, float);                                   //! RAtAbsorberEnd for MUONStandalone tracks and GlobalMuonTrackstracks
@@ -605,7 +606,7 @@ DECLARE_SOA_EXPRESSION_COLUMN(C1Pt21Pt2, c1Pt21Pt2, float, //!
 } // namespace fwdtrack
 
 // MFTStandalone tracks
-DECLARE_SOA_TABLE_FULL(StoredMFTTracks, "MFTTracks", "AOD", "MFTTRACK", //!
+DECLARE_SOA_TABLE_FULL(StoredMFTTracks_000, "MFTTracks", "AOD", "MFTTRACK",  //! On disk version of MFTTracks, version 0
                        o2::soa::Index<>, fwdtrack::CollisionId,
                        fwdtrack::X, fwdtrack::Y, fwdtrack::Z, fwdtrack::Phi, fwdtrack::Tgl,
                        fwdtrack::Signed1Pt, fwdtrack::NClusters,
@@ -615,10 +616,27 @@ DECLARE_SOA_TABLE_FULL(StoredMFTTracks, "MFTTracks", "AOD", "MFTTRACK", //!
                        fwdtrack::Sign<fwdtrack::Signed1Pt>, fwdtrack::Chi2,
                        fwdtrack::TrackTime, fwdtrack::TrackTimeRes);
 
-DECLARE_SOA_EXTENDED_TABLE(MFTTracks, StoredMFTTracks, "MFTTRACK", //!
+DECLARE_SOA_TABLE_FULL_VERSIONED(StoredMFTTracks_001, "MFTTracks", "AOD", "MFTTRACK", 1, //! On disk version of MFTTracks, version 1
+                                 o2::soa::Index<>, fwdtrack::CollisionId,
+                                 fwdtrack::X, fwdtrack::Y, fwdtrack::Z, fwdtrack::Phi, fwdtrack::Tgl,
+                                 fwdtrack::Signed1Pt, fwdtrack::NClusters, fwdtrack::MFTClusterSizes,
+                                 fwdtrack::Px<fwdtrack::Pt, fwdtrack::Phi>,
+                                 fwdtrack::Py<fwdtrack::Pt, fwdtrack::Phi>,
+                                 fwdtrack::Pz<fwdtrack::Pt, fwdtrack::Tgl>,
+                                 fwdtrack::Sign<fwdtrack::Signed1Pt>, fwdtrack::Chi2,
+                                 fwdtrack::TrackTime, fwdtrack::TrackTimeRes);
+
+DECLARE_SOA_EXTENDED_TABLE(MFTTracks_000, StoredMFTTracks_000, "MFTTRACK", //! Additional track information (Pt, Eta, P)
                            aod::fwdtrack::Pt,
                            aod::fwdtrack::Eta,
                            aod::fwdtrack::P);
+
+DECLARE_SOA_EXTENDED_TABLE(MFTTracks_001, StoredMFTTracks_001, "MFTTRACK", //! Additional track information (Pt, Eta, P)
+                           aod::fwdtrack::Pt,
+                           aod::fwdtrack::Eta,
+                           aod::fwdtrack::P);
+
+using MFTTracks = MFTTracks_000;
 
 using MFTTrack = MFTTracks::iterator;
 
