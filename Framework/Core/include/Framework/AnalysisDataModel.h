@@ -556,6 +556,20 @@ DECLARE_SOA_DYNAMIC_COLUMN(MIDBoardCh4, midBoardCh4, //!
                              return static_cast<int>((midBoards >> 24) & 0xFF);
                            });
 
+namespace v001
+{
+  DECLARE_SOA_DYNAMIC_COLUMN(NClusters, nClusters, //! Number of MFT clusters
+                             [](uint64_t mftClusterSizes) -> int8_t {
+                               int8_t nClusters = 0;
+                               for (int layer = 0; layer < 11; layer++) {
+                                if ((mftClusterSizes >> (layer * 6)) & 0x3F) {
+                                  nClusters++;
+                                }
+                               }
+                               return nClusters;
+                             });
+} // namespace v001
+
 // FwdTracksCov columns definitions
 DECLARE_SOA_COLUMN(SigmaX, sigmaX, float);        //! Covariance matrix
 DECLARE_SOA_COLUMN(SigmaY, sigmaY, float);        //! Covariance matrix
@@ -606,20 +620,38 @@ DECLARE_SOA_EXPRESSION_COLUMN(C1Pt21Pt2, c1Pt21Pt2, float, //!
 } // namespace fwdtrack
 
 // MFTStandalone tracks
-DECLARE_SOA_TABLE_FULL(StoredMFTTracks, "MFTTracks", "AOD", "MFTTRACK", //!
+DECLARE_SOA_TABLE_FULL(StoredMFTTracks_000, "MFTTracks", "AOD", "MFTTRACK", //! On disk version of MFTTracks, version 0
                        o2::soa::Index<>, fwdtrack::CollisionId,
                        fwdtrack::X, fwdtrack::Y, fwdtrack::Z, fwdtrack::Phi, fwdtrack::Tgl,
-                       fwdtrack::Signed1Pt, fwdtrack::NClusters, fwdtrack::MFTClusterSizes,
+                       fwdtrack::Signed1Pt, fwdtrack::NClusters,
                        fwdtrack::Px<fwdtrack::Pt, fwdtrack::Phi>,
                        fwdtrack::Py<fwdtrack::Pt, fwdtrack::Phi>,
                        fwdtrack::Pz<fwdtrack::Pt, fwdtrack::Tgl>,
                        fwdtrack::Sign<fwdtrack::Signed1Pt>, fwdtrack::Chi2,
                        fwdtrack::TrackTime, fwdtrack::TrackTimeRes);
 
-DECLARE_SOA_EXTENDED_TABLE(MFTTracks, StoredMFTTracks, "MFTTRACK", //!
+DECLARE_SOA_TABLE_FULL_VERSIONED(StoredMFTTracks_001, "MFTTracks", "AOD", "MFTTRACK", 1, //! On disk version of MFTTracks, version 1
+                                 o2::soa::Index<>, fwdtrack::CollisionId,
+                                 fwdtrack::X, fwdtrack::Y, fwdtrack::Z, fwdtrack::Phi, fwdtrack::Tgl,
+                                 fwdtrack::Signed1Pt, fwdtrack::v001::NClusters<fwdtrack::MFTClusterSizes>, fwdtrack::MFTClusterSizes,
+                                 fwdtrack::Px<fwdtrack::Pt, fwdtrack::Phi>,
+                                 fwdtrack::Py<fwdtrack::Pt, fwdtrack::Phi>,
+                                 fwdtrack::Pz<fwdtrack::Pt, fwdtrack::Tgl>,
+                                 fwdtrack::Sign<fwdtrack::Signed1Pt>, fwdtrack::Chi2,
+                                 fwdtrack::TrackTime, fwdtrack::TrackTimeRes);
+
+DECLARE_SOA_EXTENDED_TABLE(MFTTracks_000, StoredMFTTracks_000, "MFTTRACK", //! Additional track information (Pt, Eta, P) version 0
                            aod::fwdtrack::Pt,
                            aod::fwdtrack::Eta,
                            aod::fwdtrack::P);
+
+DECLARE_SOA_EXTENDED_TABLE(MFTTracks_001, StoredMFTTracks_001, "MFTTRACK", //! Additional track information (Pt, Eta, P) version 1
+                           aod::fwdtrack::Pt,
+                           aod::fwdtrack::Eta,
+                           aod::fwdtrack::P);
+
+using MFTTracks = MFTTracks_001;
+using StoredMFTTracks = StoredMFTTracks_001;
 
 using MFTTrack = MFTTracks::iterator;
 
@@ -1509,6 +1541,9 @@ DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredTracks, aod::StoredTracksExtra_001);
 DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredTracksIU, aod::StoredTracksExtra_001);
 DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredTracksExtra_000, aod::StoredTracksExtra_001);
 DECLARE_EQUIVALENT_FOR_INDEX(aod::HMPID_000, aod::HMPID_001);
+DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks, aod::StoredMFTTracks_000);
+DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks, aod::StoredMFTTracks_001);
+DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks_000, aod::StoredMFTTracks_001);
 } // namespace soa
 
 namespace aod

@@ -195,12 +195,20 @@ void TrackerDPL::run(ProcessingContext& pc)
     for (auto& trc : new_tracks) {
       trc.setExternalClusterIndexOffset(allClusIdx.size());
       int ncl = trc.getNumberOfPoints();
+      std::cout << "NUMBER OF CLUSTERS in TrackerSpec : " << ncl << std::endl;
+
       for (int ic = 0; ic < ncl; ic++) {
         auto externalClusterID = trc.getExternalClusterIndex(ic);
-        trc.setClusterSize(ic, allClusterSizes[ic]);
+        auto pippoClusterSize = trc.getPippoClusterSize(ic);
+        auto clusterLayer = trc.getClusterLayer(ic);
+        std::cout << "ic = " << ic << " ; cluster index = " << externalClusterID << std::endl;
+        std::cout << "allClusterSizes[ic] = " << allClusterSizes[ic] << " ; allClusterSizes[externalClusterID] = " << allClusterSizes[externalClusterID] << " ; pippoClusterSize = " << pippoClusterSize << " ; clusterLayer = " << clusterLayer << std::endl;
+        //trc.setClusterSize(ic, allClusterSizes[ic]);
+        trc.setClusterSize(clusterLayer, allClusterSizes[externalClusterID]);
         allClusIdx.push_back(externalClusterID);
       }
       allTracks.emplace_back(trc);
+      std::cout << "---------------------" << std::endl;
     }
   };
 

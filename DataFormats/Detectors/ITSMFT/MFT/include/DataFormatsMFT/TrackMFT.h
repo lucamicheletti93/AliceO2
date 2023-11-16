@@ -79,8 +79,18 @@ class TrackMFT : public o2::track::TrackParCovFwd
       size = 63;
     }
 
-    mClusterSizes &= ~(0x3f << (l * 6));
+    mClusterSizes &= ~(0x3fULL << (l * 6));
     mClusterSizes |= (static_cast<uint64_t>(size) << (l * 6));
+
+    std::cout << "l: " << l << ", size: " << size << ", mClusterSizes (binario): ";
+    uint64_t num = mClusterSizes;
+    for (int i = 63; i >= 0; --i) {
+      std::cout << ((num >> i) & 1);
+      if (i % 6 == 0) {
+        std::cout << ' ';
+      }
+    }
+    std::cout << ", mClusterSizes (decimale): " << mClusterSizes << std::endl;
   }
 
   uint64_t getClusterSize(int l)
@@ -121,14 +131,28 @@ class TrackMFTExt : public TrackMFT
   using TrackMFT::TrackMFT; // inherit base constructors
 
   int getExternalClusterIndex(int i) const { return mExtClsIndex[i]; }
+  int getPippoClusterSize(int i) const { return mPippoClsSize[i]; }
+  int getClusterLayer(int i) const { return mClsLayer[i]; }
 
   void setExternalClusterIndex(int np, int idx)
   {
     mExtClsIndex[np] = idx;
   }
 
+  void setPippoClusterSize(int np, int pippoClsSize)
+  {
+    mPippoClsSize[np] = pippoClsSize;
+  }
+
+  void setClusterLayer(int np, int clsLayer)
+  {
+    mClsLayer[np] = clsLayer;
+  }
+
  protected:
   std::array<int, MaxClusters> mExtClsIndex = {-1}; ///< External indices of associated clusters
+  std::array<int, MaxClusters> mPippoClsSize = {-1}; ///< Cluster size 
+  std::array<int, MaxClusters> mClsLayer = {-1}; ///< Cluster layer
 
   ClassDefNV(TrackMFTExt, 1);
 };

@@ -47,6 +47,7 @@ class ROframe
     while (layer--) {
       mClusters[layer].reserve(nClusters * fraction);
       mClusterExternalIndices[layer].reserve(nClusters * fraction);
+      mPippoClusterSizes[layer].reserve(nClusters * fraction);
     }
     mTracks.reserve(nClusters * fraction);
   }
@@ -60,6 +61,8 @@ class ROframe
 
   const Int_t getClusterExternalIndex(Int_t layerId, const Int_t clusterId) const { return mClusterExternalIndices[layerId][clusterId]; }
 
+  const Int_t getPippoClusterSize(Int_t layerId, const Int_t clusterId) const { return mPippoClusterSizes[layerId][clusterId]; }
+
   std::vector<T>& getTracks() { return mTracks; }
   T& getCurrentTrack() { return mTracks.back(); }
 
@@ -72,6 +75,7 @@ class ROframe
   }
   void addClusterLabelToLayer(Int_t layer, const MCCompLabel label) { mClusterLabels[layer].emplace_back(label); }
   void addClusterExternalIndexToLayer(Int_t layer, const Int_t idx) { mClusterExternalIndices[layer].push_back(idx); }
+  void addPippoClusterSizeToLayer(Int_t layer, const Int_t clusterSize) { mPippoClusterSizes[layer].push_back(clusterSize); }
   void addClusterSizeToLayer(const Int_t clusterSize) { mClusterSizes.push_back(clusterSize); }
 
   void addTrack(bool isCA = false)
@@ -90,6 +94,7 @@ class ROframe
       mClusters[iLayer].clear();
       mClusterLabels[iLayer].clear();
       mClusterExternalIndices[iLayer].clear();
+      mPippoClusterSizes[iLayer].clear();
     }
     mTracks.clear();
     mRoads.clear();
@@ -102,6 +107,7 @@ class ROframe
   std::array<std::vector<Cluster>, constants::mft::LayersNumber> mClusters;
   std::array<std::vector<MCCompLabel>, constants::mft::LayersNumber> mClusterLabels;
   std::array<std::vector<Int_t>, constants::mft::LayersNumber> mClusterExternalIndices;
+  std::array<std::vector<Int_t>, constants::mft::LayersNumber> mPippoClusterSizes;
   std::vector<T> mTracks;
   std::vector<Road> mRoads;
   std::vector<Int_t> mClusterSizes;

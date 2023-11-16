@@ -101,6 +101,7 @@ int ioutils::loadROFrameData(const o2::itsmft::ROFRecord& rof, ROframe<T>& event
       event.addClusterLabelToLayer(layer, *(mcLabels->getLabels(first + clusterId).begin()));
     }
     event.addClusterExternalIndexToLayer(layer, first + clusterId);
+    event.addPippoClusterSizeToLayer(layer, clusterSize);
     clusterId++;
   }
   return nClusters;
