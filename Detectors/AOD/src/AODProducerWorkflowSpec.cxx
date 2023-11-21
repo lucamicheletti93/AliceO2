@@ -377,7 +377,7 @@ void AODProducerWorkflowDPL::addToMFTTracksTable(mftTracksCursorType& mftTracksC
                   truncateFloatFraction(track.getPhi(), mTrackAlpha),
                   truncateFloatFraction(track.getTanl(), mTrackTgl),
                   truncateFloatFraction(track.getInvQPt(), mTrack1Pt),
-                  track.getNumberOfPoints(),
+                  //track.getNumberOfPoints(),
                   track.getClusterSizes(),
                   truncateFloatFraction(track.getTrackChi2(), mTrackChi2),
                   truncateFloatFraction(trackTime, mTrackTime),

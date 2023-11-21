@@ -267,7 +267,7 @@ DECLARE_SOA_DYNAMIC_COLUMN(ITSClusterMap, itsClusterMap, //! ITS cluster map, on
                              return clmap;
                            });
 DECLARE_SOA_DYNAMIC_COLUMN(ITSNCls, itsNCls, //! Number of ITS clusters
-                           [](uint8_t itsClusterSizes) -> uint8_t {
+                           [](uint32_t itsClusterSizes) -> uint8_t {
                              uint8_t itsNcls = 0;
                              for (int layer = 0; layer < 7; layer++) {
                                if ((itsClusterSizes >> (layer * 4)) & 0xf)
@@ -276,7 +276,7 @@ DECLARE_SOA_DYNAMIC_COLUMN(ITSNCls, itsNCls, //! Number of ITS clusters
                              return itsNcls;
                            });
 DECLARE_SOA_DYNAMIC_COLUMN(ITSNClsInnerBarrel, itsNClsInnerBarrel, //! Number of ITS clusters in the Inner Barrel
-                           [](uint8_t itsClusterSizes) -> uint8_t {
+                           [](uint32_t itsClusterSizes) -> uint8_t {
                              uint8_t itsNclsInnerBarrel = 0;
                              for (int layer = 0; layer < 3; layer++) {
                                if ((itsClusterSizes >> (layer * 4)) & 0xf)
@@ -506,7 +506,7 @@ DECLARE_SOA_COLUMN(Phi, phi, float);                                            
 DECLARE_SOA_COLUMN(Tgl, tgl, float);                                                         //! TrackParFwd parameter tan(\lamba); (\lambda = 90 - \theta_{polar})
 DECLARE_SOA_COLUMN(Signed1Pt, signed1Pt, float);                                             //! TrackParFwd parameter: charged inverse transverse momentum; (q/pt)
 DECLARE_SOA_COLUMN(NClusters, nClusters, int8_t);                                            //! Number of clusters
-DECLARE_SOA_COLUMN(MFTClusterSizes, mftClusterSizes, uint64_t);                              //! Cluster sizes per track and per layer
+DECLARE_SOA_COLUMN(MFTClusterSizes, mftClusterSizes, uint64_t);
 DECLARE_SOA_COLUMN(Chi2, chi2, float);                                                       //! Track chi^2
 DECLARE_SOA_COLUMN(PDca, pDca, float);                                                       //! PDca for MUONStandalone
 DECLARE_SOA_COLUMN(RAtAbsorberEnd, rAtAbsorberEnd, float);                                   //! RAtAbsorberEnd for MUONStandalone tracks and GlobalMuonTrackstracks
@@ -623,13 +623,14 @@ DECLARE_SOA_EXPRESSION_COLUMN(C1Pt21Pt2, c1Pt21Pt2, float, //!
 DECLARE_SOA_TABLE_FULL(StoredMFTTracks_000, "MFTTracks", "AOD", "MFTTRACK", //! On disk version of MFTTracks, version 0
                        o2::soa::Index<>, fwdtrack::CollisionId,
                        fwdtrack::X, fwdtrack::Y, fwdtrack::Z, fwdtrack::Phi, fwdtrack::Tgl,
-                       fwdtrack::Signed1Pt, fwdtrack::NClusters,
+                       fwdtrack::Signed1Pt, fwdtrack::NClusters, fwdtrack::MFTClusterSizes,
                        fwdtrack::Px<fwdtrack::Pt, fwdtrack::Phi>,
                        fwdtrack::Py<fwdtrack::Pt, fwdtrack::Phi>,
                        fwdtrack::Pz<fwdtrack::Pt, fwdtrack::Tgl>,
                        fwdtrack::Sign<fwdtrack::Signed1Pt>, fwdtrack::Chi2,
                        fwdtrack::TrackTime, fwdtrack::TrackTimeRes);
 
+// MFTStandalone tracks
 DECLARE_SOA_TABLE_FULL_VERSIONED(StoredMFTTracks_001, "MFTTracks", "AOD", "MFTTRACK", 1, //! On disk version of MFTTracks, version 1
                                  o2::soa::Index<>, fwdtrack::CollisionId,
                                  fwdtrack::X, fwdtrack::Y, fwdtrack::Z, fwdtrack::Phi, fwdtrack::Tgl,
@@ -640,18 +641,18 @@ DECLARE_SOA_TABLE_FULL_VERSIONED(StoredMFTTracks_001, "MFTTracks", "AOD", "MFTTR
                                  fwdtrack::Sign<fwdtrack::Signed1Pt>, fwdtrack::Chi2,
                                  fwdtrack::TrackTime, fwdtrack::TrackTimeRes);
 
-DECLARE_SOA_EXTENDED_TABLE(MFTTracks_000, StoredMFTTracks_000, "MFTTRACK", //! Additional track information (Pt, Eta, P) version 0
+DECLARE_SOA_EXTENDED_TABLE(MFTTracks_000, StoredMFTTracks_000, "MFTTRACK", //! Additional MFT track information (Pt, Eta, P)
                            aod::fwdtrack::Pt,
                            aod::fwdtrack::Eta,
                            aod::fwdtrack::P);
 
-DECLARE_SOA_EXTENDED_TABLE(MFTTracks_001, StoredMFTTracks_001, "MFTTRACK", //! Additional track information (Pt, Eta, P) version 1
+DECLARE_SOA_EXTENDED_TABLE(MFTTracks_001, StoredMFTTracks_001, "MFTTRACK", //! Additional MFT track information (Pt, Eta, P)
                            aod::fwdtrack::Pt,
                            aod::fwdtrack::Eta,
                            aod::fwdtrack::P);
 
-using MFTTracks = MFTTracks_001;
 using StoredMFTTracks = StoredMFTTracks_001;
+using MFTTracks = MFTTracks_001;
 
 using MFTTrack = MFTTracks::iterator;
 
@@ -1397,7 +1398,7 @@ using Run2BCInfo = Run2BCInfos::iterator;
 namespace mccollision
 {
 DECLARE_SOA_INDEX_COLUMN(BC, bc);                            //! BC index
-DECLARE_SOA_COLUMN(GeneratorsID, generatorsID, short);       //! disentangled generator IDs should be accessed from dynamic columns using getGenId, getCocktailId and getSourceId
+DECLARE_SOA_COLUMN(GeneratorsID, generatorsID, short);       //! disentangled generator IDs should be accessed using getGeneratorId, getSubGeneratorId and getSourceId
 DECLARE_SOA_COLUMN(PosX, posX, float);                       //! X vertex position in cm
 DECLARE_SOA_COLUMN(PosY, posY, float);                       //! Y vertex position in cm
 DECLARE_SOA_COLUMN(PosZ, posZ, float);                       //! Z vertex position in cm
@@ -1418,7 +1419,11 @@ DECLARE_SOA_TABLE(McCollisions, "AOD", "MCCOLLISION", //! MC collision table
                   mccollision::GeneratorsID,
                   mccollision::PosX, mccollision::PosY, mccollision::PosZ,
                   mccollision::T, mccollision::Weight,
-                  mccollision::ImpactParameter);
+                  mccollision::ImpactParameter,
+                  mccollision::GetGeneratorId<mccollision::GeneratorsID>,
+                  mccollision::GetSubGeneratorId<mccollision::GeneratorsID>,
+                  mccollision::GetSourceId<mccollision::GeneratorsID>);
+
 using McCollision = McCollisions::iterator;
 
 namespace mcparticle
@@ -1543,7 +1548,7 @@ DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredTracksExtra_000, aod::StoredTracksExtra_
 DECLARE_EQUIVALENT_FOR_INDEX(aod::HMPID_000, aod::HMPID_001);
 DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks, aod::StoredMFTTracks_000);
 DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks, aod::StoredMFTTracks_001);
-DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks_000, aod::StoredMFTTracks_001);
+//DECLARE_EQUIVALENT_FOR_INDEX(aod::StoredMFTTracks_000, aod::StoredMFTTracks_001);
 } // namespace soa
 
 namespace aod
