@@ -371,7 +371,7 @@ void AODProducerWorkflowDPL::addToMFTTracksTable(mftTracksCursorType& mftTracksC
   }
   LOGP(info, "Get number of clusters {}", track.getNumberOfPoints());
   LOGP(info, "VALIDATION = {}", clusterSize);
-  
+
   if (track.isCA()) {
     clusterSize |= (1ULL << (60));
   } else {
@@ -383,7 +383,6 @@ void AODProducerWorkflowDPL::addToMFTTracksTable(mftTracksCursorType& mftTracksC
     int size = (clSizeTest >> (i * 6)) & 0x3f;
     std::cout << size << " , ";
   }
-
 
   mftTracksCursor(collisionID,
                   track.getX(),
